@@ -1,0 +1,6 @@
+
+> pwa-inspecciones-laboratorio@0.1.0 verify
+> node scripts/verify.mjs
+
+Starter verificable: PASS
+Reporte: /Users/albertoherrera/Desktop/PWA-equipo06/pwa-inspecciones-equipo06/reports/verification.json
