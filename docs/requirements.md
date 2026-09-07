@@ -16,13 +16,19 @@ Escribe requisitos numerados con formato verificable (por ejemplo, RF-01). Cada 
 
 ## 4. Requisitos no funcionales
 
-Incluye requisitos medibles de reproducibilidad, accesibilidad, seguridad, privacidad, rendimiento y operación offline futura.
+* **Reproducibilidad:** El proyecto debe instalarse sin errores usando `npm ci`. Se comprobará ejecutando el comando antes de cada entrega semanal.
+* **Accesibilidad:** La interfaz debe ser navegable mediante teclado y cumplir con contraste básico. Se comprobará usando herramientas de DevTools.
+* **Seguridad y Privacidad:** El código no debe exponer secretos, contraseñas ni variables de entorno sensibles en el repositorio público o privado.
+* **Rendimiento:** El shell inicial de la aplicación debe cargar rápidamente. Se comprobará observando los tiempos de respuesta de Next.js.
+* **Offline futuro:** El flujo crítico de la app no debe depender de la red. Se comprobará en semanas posteriores usando DevTools (pestaña Network -> Offline) para validar la persistencia web.
 
 ## 5. Datos sintéticos y límites
 
-Explica qué datos se usarán para la actividad y qué información está prohibida.
+* **Datos ficticios a usar (Datos Sintéticos):** Se utilizarán nombres inventados para los técnicos y ubicaciones ficticias para los laboratorios (ej. "Técnico Prueba", "Laboratorio Alpha").
+* **Datos reales excluidos:** Por restricción del curso, está estrictamente prohibido utilizar o solicitar nombres reales de estudiantes, personal administrativo o información institucional confidencial de la UTT (PII).
 
 ## 6. Criterios de aceptación de la Semana 1
 
-Relaciona cada entrega con una prueba o comando que permita verificarla.
+* **Entrega actual:** La entrega se verifica mediante la ejecución de `npm run verify` o `make verify`.
+  * **Aceptación:** El comando debe ejecutar una instalación limpia (`npm ci`), compilar el proyecto (`npm run build`) y generar exitosamente el reporte en `reports/verification.json`.
 

@@ -12,3 +12,10 @@
   - Propósito: Asistencia en la estructuración de la documentación y formato Markdown.
   - Fragmentos influenciados: Formato de la sección de evidencia individual y redacción técnica de requisitos.
   - Validación humana: Revisión y adecuación manual de las salidas para coincidir exactamente con el entorno de desarrollo local (Node.js v22.18.0) y los resultados reales obtenidos.
+
+  ## Óscar (Continuación)
+* **Contribución:** Redacción de la segunda parte de docs/requirements.md (Requisitos no funcionales, reglas estrictas de datos sintéticos y criterios de aceptación).
+* **Enlace/Commit:** [Pegar enlace del PR al crearlo]
+* **Decisión:** Incluir la restricción explícita de evitar PII y secretos para alinear el proyecto con la Regla de Trabajo del encuadre.
+* **Prueba:** Revisión documental de los criterios de aceptación alineados al Quality Gate.
+* **Uso de IA:** Asistente de IA
