@@ -15,7 +15,7 @@
 
   ## Óscar (Continuación)
 * **Contribución:** Redacción de la segunda parte de docs/requirements.md (Requisitos no funcionales, reglas estrictas de datos sintéticos y criterios de aceptación).
-* **Enlace/Commit:** [Pegar enlace del PR al crearlo]
+Comando o prueba que ejecuté y resultado: Ejecuté `npm run verify` obteniendo `Starter verificable: PASS` y la generación correcta del reporte en `reports/verification.json`.
+* **Enlace/Commit:** 9e91afe6cc1da609e01ce6bd5b937be09a3ce6a1
 * **Decisión:** Incluir la restricción explícita de evitar PII y secretos para alinear el proyecto con la Regla de Trabajo del encuadre.
 * **Prueba:** Revisión documental de los criterios de aceptación alineados al Quality Gate.
-* **Uso de IA:** Asistente de IA
