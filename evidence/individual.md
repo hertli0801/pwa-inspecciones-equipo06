@@ -12,3 +12,10 @@
   - Propósito: Asistencia en la estructuración de la documentación y formato Markdown.
   - Fragmentos influenciados: Formato de la sección de evidencia individual y redacción técnica de requisitos.
   - Validación humana: Revisión y adecuación manual de las salidas para coincidir exactamente con el entorno de desarrollo local (Node.js v22.18.0) y los resultados reales obtenidos.
+
+## Óscar
+* **Contribución:** Redacción de la primera parte de docs/requirements.md (Problema, contexto, límites, usuarios, escenarios y requisitos funcionales).
+* **Enlace/Commit:** [Pegarás el enlace del PR aquí cuando lo crees en GitHub]
+* **Decisión:** Definir explícitamente el escenario de "conectividad intermitente" como caso principal, ya que la operación no puede depender de una conexión perfecta.
+* **Prueba:** Ejecución del comando npm run dev para corroborar que la aplicación local inicia correctamente. Limitación: este comando no verifica la compilación para producción ni la ausencia de secretos.
+* **Uso de IA:** Asistente de IA.
