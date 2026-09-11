@@ -19,3 +19,9 @@ Comando o prueba que ejecuté y resultado: Ejecuté `npm run verify` obteniendo 
 * **Enlace/Commit:** 9e91afe6cc1da609e01ce6bd5b937be09a3ce6a1
 * **Decisión:** Incluir la restricción explícita de evitar PII y secretos para alinear el proyecto con la Regla de Trabajo del encuadre.
 * **Prueba:** Revisión documental de los criterios de aceptación alineados al Quality Gate.
+## Óscar
+* **Contribución:** Redacción de la primera parte de docs/requirements.md (Problema, contexto, límites, usuarios, escenarios y requisitos funcionales).
+* **Enlace/Commit:** [Pegarás el enlace del PR aquí cuando lo crees en GitHub]
+* **Decisión:** Definir explícitamente el escenario de "conectividad intermitente" como caso principal, ya que la operación no puede depender de una conexión perfecta.
+* **Prueba:** Ejecución del comando npm run dev para corroborar que la aplicación local inicia correctamente. Limitación: este comando no verifica la compilación para producción ni la ausencia de secretos.
+* **Uso de IA:** Asistente de IA.
