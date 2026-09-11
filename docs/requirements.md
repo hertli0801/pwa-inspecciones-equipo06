@@ -20,6 +20,8 @@
   * **Condición de Aceptación:** Al guardar con datos válidos y red activa, el registro aparece de inmediato en la lista del historial.
 * **RF-02 (Vinculado al Escenario 2):** El sistema debe permitir la captura offline de inspecciones.
   * **Condición de Aceptación:** Al guardar sin conexión, se muestra un indicador visual de "guardado local" y el registro persiste al recargar la página.
+* **RF-03 (Vinculado al Escenario 1 y 2):** El sistema debe permitir consultar el historial de inspecciones registradas, mostrando el estado de cada una ("Sin incidencias" / "Requiere atención").
+  * **Condición de Aceptación:** Al abrir la vista principal, se muestra la lista de inspecciones con laboratorio, responsable, fecha y estado visible, sin necesidad de abrir cada registro por separado.
 
 ## 4. Requisitos no funcionales
 

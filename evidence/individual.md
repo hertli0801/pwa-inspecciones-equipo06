@@ -25,3 +25,17 @@ Comando o prueba que ejecuté y resultado: Ejecuté `npm run verify` obteniendo 
 * **Decisión:** Definir explícitamente el escenario de "conectividad intermitente" como caso principal, ya que la operación no puede depender de una conexión perfecta.
 * **Prueba:** Ejecución del comando npm run dev para corroborar que la aplicación local inicia correctamente. Limitación: este comando no verifica la compilación para producción ni la ausencia de secretos.
 * **Uso de IA:** Asistente de IA.
+
+## Lilia
+- **Nombre:** Lilia Hernandez Tun
+- **Repositorio y commit evaluado:** https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: [pegar el SHA final una vez que hagas el último push])
+- **Mi contribución concreta:** Verificación del entorno local (Node.js v22.12.0, npm) y arranque del starter (`npm ci`, `npm run dev`), confirmando las tres inspecciones sintéticas en `http://localhost:3000`. Resolución del conflicto de fusión en `evidence/individual.md` al integrar las dos partes de la contribución de Óscar (PR #2) sin perder ninguna. Redacción completa de `docs/decision-record.md`: comparación de PWA, web tradicional, app nativa y multiplataforma, y justificación de la estrategia PWA para el proyecto.
+- **Decisión técnica que puedo explicar:** Elegimos PWA con Next.js porque reutiliza el stack que ya enseña el curso y evita depender de una tienda de aplicaciones, mientras ofrece un camino claro hacia soporte offline para el escenario de conectividad intermitente.
+- **Comando o prueba que ejecuté y resultado:** Ejecuté `npm ci && npm run dev` y confirmé en el navegador que se muestran las tres inspecciones sintéticas (Laboratorio de Redes, Laboratorio de Electrónica, Laboratorio de Software) con sus respectivos estados. También ejecuté `npm run verify`, obteniendo `[pega aquí el resultado real: PASS/FAIL]` y la generación del reporte en `reports/verification.json`.
+- **Qué comprueba y qué no:** Esto comprueba que el proyecto se instala y arranca de forma reproducible y que la interfaz muestra los datos de demostración esperados. No comprueba el comportamiento offline real ni la sincronización de datos, ya que esas funciones no están implementadas en esta entrega.
+- **Limitación o riesgo que encontré:** Al fusionar el PR #2, GitHub marcó conflicto porque dos ramas agregaron una sección "## Óscar" al mismo tiempo en `evidence/individual.md`; tuve que combinarlas manualmente en el editor web para no perder ninguna de las dos aportaciones.
+- **Uso de IA (herramienta, propósito, fragmentos influenciados y validación humana):**
+  - Herramienta: Claude.
+  - Propósito: Asistencia para redactar el borrador de `docs/decision-record.md`, entender el flujo de resolución de conflictos de Git/GitHub, y estructurar esta evidencia individual.
+  - Fragmentos influenciados: Contenido inicial de `docs/decision-record.md` (tabla comparativa y justificación).
+  - Validación humana: Revisé el contenido generado, lo comparé con lo definido por el equipo en `requirements.md`, y confirmé manualmente los resultados de los comandos ejecutados en mi propio entorno antes de aceptarlo.
