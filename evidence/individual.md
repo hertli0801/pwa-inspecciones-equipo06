@@ -13,6 +13,12 @@
   - Fragmentos influenciados: Formato de la sección de evidencia individual y redacción técnica de requisitos.
   - Validación humana: Revisión y adecuación manual de las salidas para coincidir exactamente con el entorno de desarrollo local (Node.js v22.18.0) y los resultados reales obtenidos.
 
+  ## Óscar (Continuación)
+* **Contribución:** Redacción de la segunda parte de docs/requirements.md (Requisitos no funcionales, reglas estrictas de datos sintéticos y criterios de aceptación).
+Comando o prueba que ejecuté y resultado: Ejecuté `npm run verify` obteniendo `Starter verificable: PASS` y la generación correcta del reporte en `reports/verification.json`.
+* **Enlace/Commit:** 9e91afe6cc1da609e01ce6bd5b937be09a3ce6a1
+* **Decisión:** Incluir la restricción explícita de evitar PII y secretos para alinear el proyecto con la Regla de Trabajo del encuadre.
+* **Prueba:** Revisión documental de los criterios de aceptación alineados al Quality Gate.
 ## Óscar
 * **Contribución:** Redacción de la primera parte de docs/requirements.md (Problema, contexto, límites, usuarios, escenarios y requisitos funcionales).
 * **Enlace/Commit:** [Pegarás el enlace del PR aquí cuando lo crees en GitHub]
