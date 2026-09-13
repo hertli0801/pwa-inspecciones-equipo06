@@ -13,18 +13,21 @@
   - Fragmentos influenciados: Formato de la sección de evidencia individual y redacción técnica de requisitos.
   - Validación humana: Revisión y adecuación manual de las salidas para coincidir exactamente con el entorno de desarrollo local (Node.js v22.18.0) y los resultados reales obtenidos.
 
-  ## Óscar (Continuación)
-* **Contribución:** Redacción de la segunda parte de docs/requirements.md (Requisitos no funcionales, reglas estrictas de datos sintéticos y criterios de aceptación).
-Comando o prueba que ejecuté y resultado: Ejecuté `npm run verify` obteniendo `Starter verificable: PASS` y la generación correcta del reporte en `reports/verification.json`.
-* **Enlace/Commit:** 9e91afe6cc1da609e01ce6bd5b937be09a3ce6a1
-* **Decisión:** Incluir la restricción explícita de evitar PII y secretos para alinear el proyecto con la Regla de Trabajo del encuadre.
-* **Prueba:** Revisión documental de los criterios de aceptación alineados al Quality Gate.
-## Óscar
-* **Contribución:** Redacción de la primera parte de docs/requirements.md (Problema, contexto, límites, usuarios, escenarios y requisitos funcionales).
-* **Enlace/Commit:** [Pegarás el enlace del PR aquí cuando lo crees en GitHub]
-* **Decisión:** Definir explícitamente el escenario de "conectividad intermitente" como caso principal, ya que la operación no puede depender de una conexión perfecta.
-* **Prueba:** Ejecución del comando npm run dev para corroborar que la aplicación local inicia correctamente. Limitación: este comando no verifica la compilación para producción ni la ausencia de secretos.
-* **Uso de IA:** Asistente de IA.
+ ## Óscar Yael Hernández Rodríguez — Semana 2 (Persona 1: Manifest e instalabilidad)
+
+- Nombre: Óscar Yael Hernández Rodríguez
+- Repositorio y commit evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 
+ (Commit: 40ae77ae99bab79edfc0999cea318305098c9ceb)
+- Mi contribución concreta: Creación de public/manifest.webmanifest con los campos obligatorios (name, short_name, icons, start_url, display), generación de los íconos 192x192 y 512x512, y actualización de src/app/layout.tsx para enlazar el manifest mediante la metadata API de Next.js, separando themeColor en el export viewport.
+- Decisión técnica que puedo explicar: Se usó display: "standalone" en lugar de "browser" o "minimal-ui" para que la app se comporte como aplicación instalada, sin controles del navegador, y se separó themeColor en un export viewport propio porque Next 14.2 dejó de aceptarlo dentro de metadata.
+- Comando o prueba que ejecuté y resultado: Ejecuté npm run dev y verifiqué en Chrome DevTools > Application > Manifest que todos los campos obligatorios cargaran sin errores, y que ambos íconos (192x192 y 512x512) se mostraran correctamente.
+- Limitación o riesgo que encontré: El prompt de instalación completo en la barra de direcciones no aparece todavía porque depende también de un Service Worker activo, que corresponde a una tarea posterior fuera de esta semana.
+- Uso de IA (herramienta, propósito, fragmentos influenciados y validación humana):
+  - Herramienta: Claude.
+  - Propósito: Asistencia para redactar el manifest.webmanifest y adaptar layout.tsx a la sintaxis de metadata/viewport de Next.js 14.
+  - Fragmentos influenciados: Estructura del JSON del manifest y separación de themeColor en viewport.
+  - Validación humana: Prueba local en DevTools confirmando que el manifest carga sin errores y los íconos se muestran correctamente antes de subir los cambios.
+
 
 ## Lilia
 - **Nombre:** Lilia Hernandez Tun
