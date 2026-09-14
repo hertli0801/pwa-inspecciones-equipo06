@@ -28,7 +28,7 @@ Comando o prueba que ejecuté y resultado: Ejecuté `npm run verify` obteniendo 
 
 ## Lilia
 - **Nombre:** Lilia Hernandez Tun
-- **Repositorio y commit evaluado:** https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: [pegar el SHA final una vez que hagas el último push])
+- **Repositorio y commit evaluado:** https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: 8acd321472588d24168145d966ad9fd51346b6cf)
 - **Mi contribución concreta:** Verificación del entorno local (Node.js v22.12.0, npm) y arranque del starter (`npm ci`, `npm run dev`), confirmando las tres inspecciones sintéticas en `http://localhost:3000`. Resolución del conflicto de fusión en `evidence/individual.md` al integrar las dos partes de la contribución de Óscar (PR #2) sin perder ninguna. Redacción completa de `docs/decision-record.md`: comparación de PWA, web tradicional, app nativa y multiplataforma, y justificación de la estrategia PWA para el proyecto.
 - **Decisión técnica que puedo explicar:** Elegimos PWA con Next.js porque reutiliza el stack que ya enseña el curso y evita depender de una tienda de aplicaciones, mientras ofrece un camino claro hacia soporte offline para el escenario de conectividad intermitente.
 - **Comando o prueba que ejecuté y resultado:** Ejecuté `npm ci && npm run dev` y confirmé en el navegador que se muestran las tres inspecciones sintéticas (Laboratorio de Redes, Laboratorio de Electrónica, Laboratorio de Software) con sus respectivos estados. También ejecuté `npm run verify`, obteniendo `[pega aquí el resultado real: PASS/FAIL]` y la generación del reporte en `reports/verification.json`.

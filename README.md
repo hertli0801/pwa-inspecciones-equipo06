@@ -48,3 +48,20 @@ No uses datos reales de personas, laboratorios o estudiantes. Todo dato del star
 
 Las decisiones de arquitectura y las nuevas carpetas se incorporan en las actividades correspondientes; no es necesario adelantarlas.
 
+## Semana 2 — Shell instalable y manifest
+
+Se agregó el manifest de la PWA (`public/manifest.webmanifest`), iconos de instalación (`public/icons/`), y un componente `AppShell` (`src/components/app-shell.tsx`) que maneja los estados de carga, error y vacío alrededor del contenido principal.
+
+### Verificación de esta semana
+
+```bash
+npm install
+npm run verify
+npm test
+```
+
+`npm test` corre dos pruebas: `tests/starter.spec.mjs` (Semana 1) y `tests/manifest.spec.ts` (Semana 2), que valida que el manifest tenga los campos obligatorios, que los iconos existan en disco, y que `layout.tsx` y `app-shell.tsx` estén correctamente enlazados.
+
+### Continuidad de equipo
+
+Este proyecto continúa como el mismo equipo asignado desde la Semana 1 (`pwa-inspecciones-equipo06`), por continuidad del repositorio.
