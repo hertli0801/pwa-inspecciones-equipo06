@@ -42,3 +42,15 @@
   - Propósito: Asistencia para redactar el borrador de `docs/decision-record.md`, entender el flujo de resolución de conflictos de Git/GitHub, y estructurar esta evidencia individual.
   - Fragmentos influenciados: Contenido inicial de `docs/decision-record.md` (tabla comparativa y justificación).
   - Validación humana: Revisé el contenido generado, lo comparé con lo definido por el equipo en `requirements.md`, y confirmé manualmente los resultados de los comandos ejecutados en mi propio entorno antes de aceptarlo.
+
+  ## Lilia Hernandez Tun Semana: 02
+- **Nombre:** Lilia Hernandez Tun
+- **Commit SHA evaluado:** https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit evaludado: fcf60546c47b5d4fd11e650032ca525bf0ed1743)
+- **Decisión técnica que puedo explicar:** Implementé `AppShell` como un componente separado con 4 estados (`loading`, `error`, `empty`, `ready`), usando un CSS Module propio (`app-shell.module.css`) en vez de reutilizar `globals.css`, para no arriesgar el diseño ya existente de `page.tsx`. También decidí usar `tsx` para ejecutar `tests/manifest.spec.ts` en vez de una función experimental de Node, porque el workflow de GitHub Actions no fija una versión de Node con `actions/setup-node`, y `tsx` como dependencia del proyecto garantiza que funcione igual en cualquier máquina que corra `npm ci`.
+- Prueba que ejecuté y resultado: Ejecuté `npm test` (obteniendo `starter.spec.mjs: PASS` y `manifest.spec.ts: PASS`) y `npm run verify` (obteniendo `Starter verificable: PASS`), ambos sobre la rama ya fusionada con el manifest y el app-shell.
+- **Limitación o fallo diagnosticado:** Al fusionar `main` a mi rama, tuve un conflicto local en `evidence/individual.md` por tener cambios sin commitear; lo resolví haciendo commit de mi trabajo antes de fusionar. También detecté que `public-tests/check.sh` usa `rg` (ripgrep), que no viene preinstalado en Git Bash de Windows — tuve que instalarlo aparte para poder confirmar honestamente que no había secretos, ya que sin `rg` el script reporta `PUBLIC_OK` de forma falsa (por el uso de `!` frente a un comando inexistente).
+- **Cambio que podría defender o modificar en vivo:** Podría explicar cómo cambiar el estado por defecto de `AppShell` de `ready` a `loading` simulando una carga asíncrona con `useEffect` y `setTimeout`, ya que ahora mismo los datos son síncronos (importados directamente) y siempre resuelven a `ready` o `empty`.
+- **Uso declarado de IA (herramienta, propósito, validación):**
+ Herramienta: Claude (Anthropic). 
+ Propósito: asistencia para redactar el componente `AppShell`, el test `manifest.spec.ts`, diagnosticar errores de configuración de TypeScript en `tests/tsconfig.json`, y entender el comportamiento de `!` frente a comandos inexistentes en Bash. 
+ Validación humana: ejecuté cada comando yo misma en mi terminal, confirmé los resultados reales (`PASS`/`FAIL`), y resolví manualmente el conflicto de fusión en mi propio editor antes de aceptar cualquier código sugerido.
