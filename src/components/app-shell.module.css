@@ -1,44 +1,110 @@
-.shell {
-  min-height: 100vh;
+.root {
   display: flex;
   flex-direction: column;
+  gap: 28px;
 }
 
-.nav {
-  display: flex;
+.header {
   align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1.5rem;
-  background: #0f172a;
-  color: white;
+  background: linear-gradient(135deg, #172b62, #3156d3);
+  border-radius: 22px;
+  color: #ffffff;
+  display: flex;
+  gap: 20px;
+  padding: 32px 40px;
 }
 
-.brand {
-  font-weight: 600;
+.brandIcon {
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
-.nav a {
-  color: #93c5fd;
-  text-decoration: none;
+.headerText {
+  min-width: 0;
 }
 
-.state {
-  flex: 1;
+.eyebrow {
+  color: #c9d3ff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  letter-spacing: -0.03em;
+  margin: 0 0 10px;
+}
+
+.description {
+  color: #e6ebff;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 560px;
+}
+
+.stateBlock {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #dce3ef;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 3rem 1.5rem;
+  gap: 12px;
+  padding: 48px 24px;
   text-align: center;
-  color: #334155;
+}
+
+.stateTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.stateText {
+  color: #64708a;
+  margin: 0;
+  max-width: 420px;
+}
+
+.spinner {
+  animation: spin 0.9s linear infinite;
+  border: 3px solid #dce3ef;
+  border-radius: 50%;
+  border-top-color: #3156d3;
+  height: 32px;
+  width: 32px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .retryButton {
-  padding: 0.5rem 1.25rem;
-  border-radius: 0.5rem;
-  border: 1px solid #1e3a8a;
-  background: white;
-  color: #1e3a8a;
+  background: #3156d3;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
   cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 10px 18px;
+}
+
+.retryButton:hover {
+  background: #23409e;
+}
+
+@media (max-width: 760px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 24px;
+    text-align: left;
+  }
 }
