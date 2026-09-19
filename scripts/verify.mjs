@@ -12,7 +12,13 @@ const required = [
   "docs/requirements.md",
   "docs/decision-record.md",
   "tests/starter.spec.mjs",
-  "evidence/individual.md"
+  "evidence/individual.md",
+  "public/manifest.webmanifest",
+  "public/icons/icon-192.png",
+  "public/icons/icon-512.png",
+  "src/components/app-shell.tsx",
+  "tests/manifest.spec.ts",
+  "README.md"
 ];
 
 const missing = required.filter((file) => !existsSync(resolve(root, file)));

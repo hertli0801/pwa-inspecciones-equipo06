@@ -99,9 +99,10 @@ export default function HomePage() {
         </section>
       </AppShell>
 
-      <footer className="footer">
-        <p>Aplicaciones Web Progresivas · Universidad Tecnológica de Tehuacán</p>
-      </footer>
-    </main>
+        <footer className="footer">
+          <p>Aplicaciones Web Progresivas · Universidad Tecnológica de Tehuacán</p>
+        </footer>
+      </main>
+   
   );
 }
