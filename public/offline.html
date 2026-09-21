@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sin conexión — Inspecciones de laboratorio</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #0f4c81;
+      color: #ffffff;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    main {
+      max-width: 28rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin: 0 0 1.5rem;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+    button {
+      font: inherit;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 999px;
+      border: none;
+      background: #ffffff;
+      color: #0f4c81;
+      cursor: pointer;
+    }
+    button:active {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Sin conexión</h1>
+    <p>
+      No se pudo cargar esta página porque no hay conexión a internet.
+      Tus datos sintéticos ya capturados siguen disponibles al reconectarte.
+    </p>
+    <button onclick="location.reload()">Reintentar</button>
+  </main>
+</body>
+</html>
