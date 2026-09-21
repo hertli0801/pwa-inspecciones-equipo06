@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node tests/starter.spec.mjs && tsx tests/manifest.spec.ts",
+    "test": "node tests/starter.spec.mjs && tsx tests/manifest.spec.ts && tsx tests/service-worker.spec.ts && tsx tests/offline.spec.ts",
     "verify": "node scripts/verify.mjs"
   },
   "dependencies": {

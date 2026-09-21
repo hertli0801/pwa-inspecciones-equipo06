@@ -18,7 +18,14 @@ const required = [
   "public/icons/icon-512.png",
   "src/components/app-shell.tsx",
   "tests/manifest.spec.ts",
-  "README.md"
+  "README.md",
+  "public/sw.js",
+  "public/offline.html",
+  "docs/cache-strategy.md",
+  "src/lib/pwa/register-service-worker.ts",
+  "src/components/register-service-worker.tsx",
+  "tests/service-worker.spec.ts",
+  "tests/offline.spec.ts"
 ];
 
 const missing = required.filter((file) => !existsSync(resolve(root, file)));
