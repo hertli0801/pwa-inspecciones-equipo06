@@ -70,3 +70,30 @@
   - Propósito: Asistencia para diseñar la estructura.
   - Fragmentos influenciados: Estructura de algunos archivos y hacer pruebas locales.
   - Validación humana: Revisé que no se tocaran `layout.tsx`, `register-service-worker.ts`, `package.json` ni `tests/`, corrí yo mismo `node --check`, el smoke test, `npm ci`, `npm run build`, `npm test` y `npm run verify` en mi propio entorno, y confirmé cada resultado (`PASS`/compilación exitosa) antes de hacer commit.
+
+## Evidencia Yael Hernández Rodríguez --Semana 3
+- Nombre: Óscar Yael Hernández Rodríguez
+- Repositorio y commit evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: [SHA final de main que compartan en el grupo])
+- Mi contribución concreta (Persona 2, rama sw/register, commit ace4ebeb76977044db0fb6c84e67b8b7bc3b552f): Creación de src/lib/pwa/register-service-worker.ts (función que verifica soporte de service workers, registra /sw.js y escucha updatefound), creación de src/components/register-service-worker.tsx (componente cliente que ejecuta el registro desde useEffect) y edición de src/app/layout.tsx únicamente para agregar <RegisterServiceWorker /> dentro del body.
+- Decisión técnica que puedo explicar: El registro va en un componente cliente separado con "use client" porque layout.tsx es un Server Component y no puede usar hooks ni navigator. Ante updatefound solo se informa por consola y no se fuerza skipWaiting(), para no reemplazar la versión de un usuario a media sesión sin avisar; la versión nueva se activa al cerrar las pestañas abiertas. Además, si el navegador no soporta service workers ("serviceWorker" in navigator), la función termina sin error y la app funciona normal sin offline. Se registra de inmediato si document.readyState ya es "complete", porque en Next.js el componente puede montarse después del evento load.
+- Comando o prueba que ejecuté y resultado: Ejecuté npm run build y compiló sin errores (Compiled successfully, linting y validación de tipos correctos, 4/4 páginas estáticas generadas). Revisé con git status que solo cambiaran mis 3 archivos y con git diff que layout.tsx tuviera únicamente el import y el componente agregados. [Agregar aquí el resultado de npm test, npm run verify y de la prueba en DevTools > Application > Service Workers una vez que main esté completo.]
+- Limitación o riesgo que encontré: Mientras public/sw.js (Persona 1) no esté fusionado en main, el registro devuelve un 404 en consola, porque mi código depende de ese archivo. Además, la notificación de versión nueva es solo un mensaje en consola, no hay aviso visible al usuario.
+- Uso de IA (herramienta, propósito, fragmentos influenciados y validación humana):
+  - Herramienta: Claude.
+  - Propósito: Apoyo para entender la tarea y redactar el código de registro del service worker, además de explicarme cada archivo y los comandos.
+  - Fragmentos influenciados: La estructura de register-service-worker.ts (verificación de soporte, manejo de updatefound y comprobación de readyState) y el componente register-service-worker.tsx.
+  - Validación humana: Compilé el proyecto con npm run build sin errores, revisé git status y git diff para confirmar que solo cambié mis archivos, y [probé el registro en DevTools cuando sw.js estuvo en main].
+  
+## Lilia Hernández Tun — Semana 3 (Persona 3: Pruebas, CI y documentación)
+
+- Nombre: Lilia Hernández Tun
+- Repositorio y commit evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: 99132efcedb831a65662e762c0e6642f3339fd55)
+- Mi contribución concreta: Creación de `tests/service-worker.spec.ts` y `tests/offline.spec.ts` (pruebas del service worker), actualización de `scripts/verify.mjs` y del script `test` en `package.json`, copia del workflow de GitHub Actions `.github/workflows/week-03-w03-service-worker-offline.yml`, reemplazo de `public-tests/check.sh`, y adición de la sección "Semana 3" en `README.md`.
+- Decisión técnica que puedo explicar: Usé `node:vm` para crear un `self`, `caches` y `fetch` falsos y ejecutar el código REAL de `public/sw.js` dentro de ese sandbox, en vez de reimplementar su lógica por separado. Esto permite probar el comportamiento real del service worker (instalación/precache, limpieza de versiones viejas en `activate`, y las estrategias network-first/cache-first ante fallos de red) sin depender de un navegador real.
+- Comando o prueba que ejecuté y resultado: Ejecuté `npm run build` (compiló exitosamente), `npm test` (las 4 pruebas —starter, manifest, service-worker y offline— dieron PASS) y `npm run verify` (PASS, sin artefactos faltantes).
+- Limitación o riesgo que encontré: El paso AC-03 del workflow de GitHub Actions ejecuta `npm run test --if-present -- --run`, pero mi script `test` es una cadena de comandos (`node ... && tsx ... && tsx ...`), no un test-runner que reconozca `--run`. Verifiqué localmente que la bandera se pasa sin efecto al último comando (`tsx tests/offline.spec.ts --run`) y no rompe la ejecución, pero es un acoplamiento frágil si en el futuro cambia el runner.
+- Uso de IA (herramienta, propósito, fragmentos influenciados y validación humana):
+  - Herramienta: Claude.
+  - Propósito: Asistencia para diseñar el harness de `node:vm` (fakes de `self` y `caches`) y redactar los casos de prueba de `service-worker.spec.ts` y `offline.spec.ts`.
+  - Fragmentos influenciados: La estructura completa de ambos archivos de prueba, y el arreglo `required` agregado en `scripts/verify.mjs`.
+  - Validación humana: Corrí yo misma `npx tsx tests/service-worker.spec.ts`, `npx tsx tests/offline.spec.ts`, `npm run build`, `npm test` y `npm run verify`, confirmando PASS en todos antes de subir.
