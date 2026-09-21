@@ -65,3 +65,19 @@ npm test
 ### Continuidad de equipo
 
 Este proyecto continúa como el mismo equipo asignado desde la Semana 1 (`pwa-inspecciones-equipo06`), por continuidad del repositorio.
+
+## Semana 3 — Service Worker y estrategia de caché
+
+Se agregó el service worker de la aplicación (`public/sw.js`) con estrategia *network-first* para la navegación y *cache-first* para assets estáticos, versionado de cache (`CACHE_VERSION`) con limpieza de versiones viejas en `activate`, y una página de respaldo sin conexión (`public/offline.html`). El registro del service worker se hace desde un componente cliente (`src/components/register-service-worker.tsx`) que usa `src/lib/pwa/register-service-worker.ts`, invocado desde `src/app/layout.tsx`.
+
+Las decisiones técnicas de esta semana (por qué *network-first* para navegación, cómo funciona el versionado del cache, y qué pasa exactamente cuando no hay red) están documentadas en `docs/cache-strategy.md`.
+
+### Verificación de esta semana
+
+```bash
+npm install
+npm run verify
+npm test
+```
+
+`npm test` ahora corre cuatro pruebas: `tests/starter.spec.mjs` (Semana 1), `tests/manifest.spec.ts` (Semana 2), `tests/service-worker.spec.ts` y `tests/offline.spec.ts` (Semana 3). Estas dos últimas ejecutan el código real de `public/sw.js` dentro de un sandbox de `node:vm`, simulando `self`, `caches` y `fetch`, para validar la instalación (precache), la limpieza de versiones viejas, y el comportamiento real cuando la red falla (no solo que los archivos existan).
