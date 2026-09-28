@@ -81,3 +81,22 @@ npm test
 ```
 
 `npm test` ahora corre cuatro pruebas: `tests/starter.spec.mjs` (Semana 1), `tests/manifest.spec.ts` (Semana 2), `tests/service-worker.spec.ts` y `tests/offline.spec.ts` (Semana 3). Estas dos últimas ejecutan el código real de `public/sw.js` dentro de un sandbox de `node:vm`, simulando `self`, `caches` y `fetch`, para validar la instalación (precache), la limpieza de versiones viejas, y el comportamiento real cuando la red falla (no solo que los archivos existan).
+
+## Semana 4 — Renderizado CSR y SSR
+
+- `/inspecciones`: listado renderizado en el servidor (SSR), con `loading.tsx` y `error.tsx`.
+- `/inspecciones/[id]`: detalle renderizado en el cliente (CSR), con estados de carga y error.
+- `src/components/loading-state.tsx`: indicador de carga compartido por ambas rutas.
+- Decisión y métrica de carga (First Load JS por ruta): ver `docs/rendering-decision.md`.
+
+### Verificación de esta semana
+
+```bash
+npm ci
+npm run build
+npm test
+npm run verify
+bash public-tests/check.sh
+```
+
+`npm test` incluye `tests/rendering.spec.ts`, que comprueba que el listado sea un Server Component con `force-dynamic`, que el detalle sea un Client Component con `useEffect`, que ambos usen `LoadingState`, que exista un estado de error, y que no haya `Math.random()` ni fechas dependientes del navegador en el render.
