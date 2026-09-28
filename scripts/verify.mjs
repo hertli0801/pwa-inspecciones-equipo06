@@ -21,11 +21,17 @@ const required = [
   "README.md",
   "public/sw.js",
   "public/offline.html",
-  "docs/cache-strategy.md",
   "src/lib/pwa/register-service-worker.ts",
-  "src/components/register-service-worker.tsx",
+  "docs/cache-strategy.md",
   "tests/service-worker.spec.ts",
-  "tests/offline.spec.ts"
+  "tests/offline.spec.ts",
+  "src/app/inspecciones/page.tsx",
+  "src/app/inspecciones/[id]/page.tsx",
+  "src/app/inspecciones/loading.tsx",
+  "src/app/inspecciones/error.tsx",
+  "src/components/loading-state.tsx",
+  "docs/rendering-decision.md",
+  "tests/rendering.spec.ts"
 ];
 
 const missing = required.filter((file) => !existsSync(resolve(root, file)));
