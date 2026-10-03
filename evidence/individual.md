@@ -133,3 +133,35 @@
   - Propósito: Asistencia para estructurar la ruta CSR, entender la diferencia entre el `loading.tsx` del segmento y el estado de carga del cliente, y diagnosticar el error de build local.
   - Fragmentos influenciados: Estructura de `src/app/inspecciones/[id]/page.tsx` (la función `fetchInspectionOnClient`, el `useEffect` con la bandera `cancelled` y el manejo de los tres estados).
   - Validación humana: Revisé que el commit solo agregara `src/app/inspecciones/[id]/page.tsx`, sin tocar el listado SSR, `LoadingState` ni los tests del equipo. Corrí `npm test` y `npx tsc --noEmit` en mi entorno y probé en el navegador los estados de carga, detalle y error antes de subir los cambioxs
+
+# Evidencia individual
+
+- Estudiante:
+- Commit SHA evaluado:
+- Decisión técnica que puedo explicar:
+- Prueba que ejecuté y resultado:
+- Limitación o fallo diagnosticado:
+- Cambio que podría defender o modificar en vivo:
+- Uso declarado de IA (herramienta, propósito, validación):
+
+# Evidencia individual
+
+- Estudiante:
+- Commit SHA evaluado:
+- Decisión técnica que puedo explicar:
+- Prueba que ejecuté y resultado:
+- Limitación o fallo diagnosticado:
+- Cambio que podría defender o modificar en vivo:
+- Uso declarado de IA (herramienta, propósito, validación):
+
+# Evidencia individual
+
+- Estudiante:
+- Commit SHA evaluado:
+- Decisión técnica que puedo explicar:
+- Prueba que ejecuté y resultado:
+- Limitación o fallo diagnosticado:
+- Cambio que podría defender o modificar en vivo:
+- Uso declarado de IA (herramienta, propósito, validación):
+
+
