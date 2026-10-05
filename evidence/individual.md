@@ -136,32 +136,42 @@
 
 # Evidencia individual
 
-- Estudiante:
-- Commit SHA evaluado:
-- Decisión técnica que puedo explicar:
-- Prueba que ejecuté y resultado:
-- Limitación o fallo diagnosticado:
-- Cambio que podría defender o modificar en vivo:
-- Uso declarado de IA (herramienta, propósito, validación):
 
-# Evidencia individual
+## Nombre: José Alberto Herrera Flores - Semana 5
+- Repositorio y commit evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: 69e1d45f964e030d8597266855019d87bef900e0, rama `sync/conflict-policy`)
+- Mi contribución concreta: Creación de `src/lib/sync/conflict-policy.ts`. El archivo define los tipos `ConflictCandidate` (`clientId` y `updatedAt`) y `ConflictResolution` (`"keep-local" | "keep-remote"`) y la función `resolveConflict(local, remote)`, que aplica la política Last-Write-Wins. Esta función es la que usa `queue.ts` para decidir qué versión de una inspección se conserva cuando la copia local y la del servidor no coinciden.
+- Decisión técnica que puedo explicar: Last-Write-Wins significa que gana la versión con el `updatedAt` más reciente. Las fechas se comparan con `Date.parse`, que las convierte a milisegundos, y no como texto. Así, dos fechas que representan el mismo instante en zonas horarias distintas (`2026-10-04T04:00:00-06:00` y `2026-10-04T10:00:00Z`) se reconocen como un empate. En un empate exacto gana el remoto, y eso es una decisión explícita, no un accidente: la condición es `localTime > remoteTime` (estricta), así que el local solo gana si es más reciente. La razón es que el servidor se trata como fuente de verdad cuando no se puede saber qué edición fue después, y así un dispositivo con el reloj adelantado no gana siempre. Una fecha inválida (`NaN`) pierde frente a una válida, para que un registro corrupto no sobrescriba datos buenos. Elegí LWW en lugar de vectores de versión o fusión campo por campo porque es determinista, fácil de probar y suficiente para el alcance de la semana. Las otras opciones requieren metadatos extra por dispositivo o reglas por campo.
+- Comando o prueba que ejecuté y resultado: Hice una instalación limpia con `npm ci`. Después ejecuté `npx tsc --noEmit` (sin errores), `npm run build` (compiló; `/inspecciones` e `/inspecciones/[id]` quedaron como `ƒ`), `npm test` (5/5 PASS: starter, manifest, service-worker, offline y rendering) y `npm run verify` (`Starter verificable: PASS`). También corrí con `tsx` un script temporal con 7 casos sintéticos: local más reciente → `keep-local`; remoto más reciente → `keep-remote`; empate exacto → `keep-remote`; empate con zonas horarias distintas → `keep-remote`; local inválido → `keep-remote`; remoto inválido → `keep-local`; ambos inválidos → `keep-remote`. Los 7 dieron PASS. No subí ese script porque las pruebas formales (`tests/sync.spec.ts`) le corresponden a la Persona 3.
+- Limitación o riesgo que encontré: LWW pierde datos sin avisar. Si dos dispositivos editan la misma inspección casi al mismo tiempo, se conserva una versión completa y la otra se descarta, sin fusionar campos ni avisar al usuario. Además, depende de los relojes de los dispositivos: un reloj desfasado puede hacer que gane una edición que en realidad fue anterior. Esto queda documentado como trabajo futuro (vectores de versión, fusión por campo o resolución manual). En mi entorno, el primer `npx tsc --noEmit` volvió a fallar con `Cannot find type definition file for 'node 2'`, por las carpetas duplicadas que crea la sincronización de iCloud en `node_modules/@types`. Lo resolví con `npm ci`. Es un problema de mi entorno, no del código.
+- Cambio que podría defender o modificar en vivo: Cambiar `localTime > remoteTime` por `localTime >= remoteTime` y mostrar que en un empate exacto el resultado pasa de `keep-remote` a `keep-local`, es decir, que el empate ahora favorece al dispositivo. Con eso puedo explicar por qué elegimos la comparación estricta.
+- Uso de IA (herramienta, propósito, fragmentos influenciados y validación humana):
+  - Herramienta: Claude Code.
+  - Propósito: Asistencia para actualizar el repositorio, crear la rama, verificar el build y las pruebas, y diagnosticar otra vez el error de tipos causado por iCloud.
+  - Fragmentos influenciados: `src/lib/sync/conflict-policy.ts`, a partir del código definido en el reparto del equipo.
+  - Validación humana: Revisé que el commit solo agregara `src/lib/sync/conflict-policy.ts`, sin tocar `schema.ts`, `queue.ts`, `tests/` ni `evidence/`. Corrí `npm ci`, `npx tsc --noEmit`, `npm run build`, `npm test` y `npm run verify` en mi máquina, y comprobé el empate y las fechas inválidas con casos sintéticos antes de subir los cambios.
 
-- Estudiante:
-- Commit SHA evaluado:
-- Decisión técnica que puedo explicar:
-- Prueba que ejecuté y resultado:
-- Limitación o fallo diagnosticado:
-- Cambio que podría defender o modificar en vivo:
-- Uso declarado de IA (herramienta, propósito, validación):
+## Evidencia Yael Hernández Rodríguez -- Semana 5
+- Nombre: Óscar Yael Hernández Rodríguez
+- Repositorio y commit evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: f38f8f737a8c0d7a5e49a2da0f06dbe392254b3c)
+- Mi contribución concreta (Persona 1, rama sync/schema, commit 433528293dae02e7bf14f32a8ebd6d77ad4d89a0): Creación de src/lib/storage/schema.ts, que define los tipos SyncStatus, InspectionPayload y QueuedInspection, la constante STORAGE_KEY (pwa-inspecciones:sync-queue:v1) y las funciones serializeQueue y parseQueue (con el validador interno isValidQueuedInspection). No modifiqué conflict-policy.ts, queue.ts ni tests/.
+- Decisión técnica que puedo explicar: parseQueue nunca lanza excepciones. Si el contenido de localStorage está corrupto (JSON inválido, que no sea un arreglo, o un registro incompleto por una pestaña cerrada a mitad de un guardado), devuelve [] o descarta solo los registros inválidos con filter, para que la app no se caiga al arrancar. Los campos obligatorios de QueuedInspection tienen una razón: clientId es la clave de idempotencia (un reintento no duplica el registro en el servidor) y version permite detectar respuestas fuera de orden. isValidQueuedInspection es un type guard que valida tipos y rangos reales (version >= 1, attempts >= 0, status dentro de los 4 valores permitidos), porque JSON.parse devuelve unknown y TypeScript no verifica datos en tiempo de ejecución. STORAGE_KEY lleva el sufijo v1 para poder cambiar el formato en el futuro sin chocar con datos viejos.
+- Comando o prueba que ejecuté y resultado: Ejecuté npm run build y compiló sin errores (Compiled successfully, linting y validación de tipos correctos, 5/5 páginas estáticas generadas). Sobre el main final (commit f38f8f737a8c0d7a5e49a2da0f06dbe392254b3c), el equipo verificó adicionalmente npm ci (instalación limpia), npm test (6/6 PASS: starter, manifest, service-worker, offline, rendering y sync) y npm run verify (Starter verificable: PASS).
+- Limitación o riesgo que encontré: schema.ts todavía no es importado por nadie hasta que se fusione queue.ts (Persona 3), así que su comportamiento real solo se valida con las pruebas de esa parte. Además, parseQueue descarta en silencio los registros inválidos: evita que la app se caiga, pero el usuario no recibe aviso si pierde un registro corrupto. Tampoco valida que createdAt y updatedAt sean fechas parseables, solo que sean texto.
+- Uso de IA (herramienta, propósito, fragmentos influenciados y validación humana):
+  - Herramienta: Claude.
+  - Propósito: Apoyo para entender mi parte del reparto, seguir los pasos de Git y explicarme el código y el resultado del build.
+  - Fragmentos influenciados: El código de schema.ts venía en el documento de reparto del equipo; Claude me explicó su funcionamiento (parseQueue defensivo, type guard, campos obligatorios) y no lo reescribió.
+  - Validación humana: Pegué el archivo en src/lib/storage/schema.ts, compilé con npm run build sin errores, y confirmé con git status que solo cambió mi archivo antes de subirlo.
 
-# Evidencia individual
-
-- Estudiante:
-- Commit SHA evaluado:
-- Decisión técnica que puedo explicar:
-- Prueba que ejecuté y resultado:
-- Limitación o fallo diagnosticado:
-- Cambio que podría defender o modificar en vivo:
-- Uso declarado de IA (herramienta, propósito, validación):
-
-
+## Nombre: Lilia Hernández Tun — Semana 5
+- Repositorio y commit evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: f38f8f737a8c0d7a5e49a2da0f06dbe392254b3c, rama `sync/queue-tests-docs`)
+- Mi contribución concreta (Persona 3): Creación de `src/lib/sync/queue.ts` (clase `SyncQueue` con `enqueue`, `list`, `update`, `syncAll` y `createMemoryStorage`), `tests/sync.spec.ts` (8 escenarios de comportamiento real), actualización de `tests/tsconfig.json` (agregando `"DOM"` a `lib`) y `package.json` (agregando `sync.spec.ts` a la cadena de `npm test`), y creación de `docs/sync-policy.md` documentando la política de sincronización.
+- Decisión técnica que puedo explicar: `syncAll()` protege contra tres riesgos reales de un entorno offline: idempotencia (un `clientId` único evita que un reintento duplique el registro en el servidor), reintentos automáticos (un elemento `failed` se vuelve a intentar en la siguiente llamada sin acción manual) y respuestas fuera de orden (antes de aplicar el resultado de un envío, se compara la `version` guardada contra la que tenía el elemento al iniciar ese envío; si cambió — porque el usuario editó mientras la petición estaba en curso — la respuesta se descarta en vez de sobrescribir la edición más reciente). También agregué `"DOM"` a `tests/tsconfig.json` porque, por primera vez, las pruebas importan módulos reales de `src/` que usan `localStorage`, una API del navegador que TypeScript no reconoce sin esa librería.
+- Comando o prueba que ejecuté y resultado: `npm ci`, `npx tsc --noEmit`, `npm run build` (compiló sin errores, 5 rutas generadas), `npm test` (6/6 PASS: starter, manifest, service-worker, offline, rendering y sync) y `npm run verify` (`Starter verificable: PASS`). Las 8 pruebas de `sync.spec.ts` cubren: creación de un elemento válido con `clientId`; sincronización exitosa; fallo con reintento posterior exitoso; idempotencia real (mismo `clientId` no crea registro duplicado en un servidor simulado); resistencia a respuestas fuera de orden (una edición durante el envío no se pierde); `parseQueue` resistente a `localStorage` corrupto; persistencia entre sesiones (simulando cerrar y reabrir la pestaña); y la política Last-Write-Wins de `conflict-policy.ts`.
+- Limitación o riesgo que encontré: al pegar archivos largos directamente en la terminal (Git Bash/MINGW64) con heredoc (`cat > archivo << 'EOF'`), el contenido se truncó dos veces a mitad del archivo. Lo resolví creando los archivos con el editor en vez de pegarlos por terminal. También generé por accidente archivos vacíos sueltos (`next`, `node`, `pwa-inspecciones-laboratorio@0.1.0`) y un `tsconfig.tsbuildinfo` de caché que no debían subirse; los identifiqué con `git status` antes de hacer `git add` y los borré sin que llegaran al commit.
+- Cambio que podría defender o modificar en vivo: Mostrar qué pasa si se quita la verificación de `current.version !== versionAtAttempt` dentro de `syncAll()` — demostrando que, sin ella, una respuesta tardía de una sincronización vieja sobrescribiría una edición más reciente del usuario, perdiendo el cambio en silencio.
+- Uso de IA (herramienta, propósito, fragmentos influenciados y validación humana):
+  - Herramienta: Claude.
+  - Propósito: Guía paso a paso de Git (crear rama, verificar qué archivos faltaban, limpiar archivos basura antes del commit), diagnóstico del truncado de archivos al usar heredoc, y explicación del propósito de cada parte de `queue.ts` y `sync.spec.ts`.
+  - Fragmentos influenciados: `src/lib/sync/queue.ts`, `tests/sync.spec.ts` y `docs/sync-policy.md` venían de una sesión previa de trabajo en equipo (Claude Code) ya validada; en esta sesión los guardé en sus archivos definitivos, corregí el truncado y conecté las pruebas a `npm test`.
+  - Validación humana: Confirmé con `git status` que solo se subieran los 5 archivos que me correspondían, corrí `npm ci`, `npx tsc --noEmit`, `npm run build`, `npm test` y `npm run verify` tanto en mi rama como en `main` después del merge, y verifiqué que las 8 pruebas de `sync.spec.ts` pasaran sin fallos de aserción.
