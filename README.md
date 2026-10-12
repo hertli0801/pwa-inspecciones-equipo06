@@ -100,3 +100,30 @@ bash public-tests/check.sh
 ```
 
 `npm test` incluye `tests/rendering.spec.ts`, que comprueba que el listado sea un Server Component con `force-dynamic`, que el detalle sea un Client Component con `useEffect`, que ambos usen `LoadingState`, que exista un estado de error, y que no haya `Math.random()` ni fechas dependientes del navegador en el render.
+
+## Semana 6: capacidades del dispositivo y notificaciones
+
+Evidencia opcional (camara), ubicacion aproximada y notificaciones de cambio, con permisos minimos y fallback. Detalle de decisiones y limites en `docs/capabilities.md`.
+
+### Ejecucion y verificacion
+
+Requiere Node 20 o superior (probado con Node 22, ver `.nvmrc`). Equivalente exacto de `make verify`:
+
+    npm ci
+    npm run build
+    npm test
+    npm run verify
+
+`npm run verify` genera `reports/verification.json`. El check publico se ejecuta con `bash public-tests/check.sh`.
+
+### Supuestos
+
+- Solo datos sinteticos.
+- Las capacidades se piden bajo una accion del usuario, nunca al cargar la pagina.
+- Los modulos exponen la logica con sus fallbacks; las pruebas simulan las APIs del navegador.
+
+### Evidencia
+
+- Pruebas: `tests/capabilities.spec.ts` (casos soportados, no soportados, denegados y entradas invalidas).
+- Reporte de CI: enlace a la corrida de GitHub Actions del commit final.
+- Evidencia individual: `evidence/individual.md`.

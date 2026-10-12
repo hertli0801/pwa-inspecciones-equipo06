@@ -31,7 +31,12 @@ const required = [
   "src/app/inspecciones/error.tsx",
   "src/components/loading-state.tsx",
   "docs/rendering-decision.md",
-  "tests/rendering.spec.ts"
+  "tests/rendering.spec.ts",
+  "src/lib/device/camera.ts",
+  "src/lib/device/geolocation.ts",
+  "src/lib/notifications/client.ts",
+  "docs/capabilities.md",
+  "tests/capabilities.spec.ts"
 ];
 
 const missing = required.filter((file) => !existsSync(resolve(root, file)));
