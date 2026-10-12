@@ -191,6 +191,7 @@
   - Validación humana: Corregí el archivo hasta llegar a las 88 líneas, corrí yo mismo `tsc` y el script local, revisé con `git status` que solo se agregara `src/lib/device/camera.ts` antes del commit, y la verificación completa sobre el main final la corrió la Persona 3 (ver su entrada).
 
 
+## Evidencia José Alberto Herrera Flores -- Semana 6
 - Nombre: José Alberto Herrera Flores
 - Repositorio y commit evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: 46221da8bd7c7d271d6151a7708594aa64663390, rama device/geolocation)
 - Mi contribución concreta: Creación de `src/lib/device/geolocation.ts` con `getApproximateLocation(host?)`, que obtiene una ubicación aproximada y opcional mediante `getCurrentPosition` y devuelve un resultado tipado `LocationResult` (`ok: true` con latitud/longitud u `ok: false` con `reason`: `unsupported`, `denied`, `timeout` o `unavailable`), y `roundCoordinate(value)`, que redondea las coordenadas a 2 decimales. El entorno del navegador entra como parámetro opcional (`GeoHost`) para poder simular en pruebas "no existe", "denegado" y "concedido". No toqué `camera.ts`, `client.ts`, `tests/`, `package.json` ni `evidence/` en mi PR.
