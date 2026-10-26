@@ -36,7 +36,21 @@ const required = [
   "src/lib/device/geolocation.ts",
   "src/lib/notifications/client.ts",
   "docs/capabilities.md",
-  "tests/capabilities.spec.ts"
+  "tests/capabilities.spec.ts",
+
+  // Semana 8: pruebas automatizadas y CI
+  "Makefile",
+  ".eslintrc.json",
+  "playwright.config.ts",
+  "scripts/run-tests.mjs",
+  "docs/test-strategy.md",
+  ".github/workflows/academic-evaluation.yml",
+  "tests/unit/sync-queue-rules.spec.ts",
+  "tests/unit/validate-inspection.spec.ts",
+  "tests/integration/offline-persistence.spec.ts",
+  "tests/integration/sync-idempotency.spec.ts",
+  "tests/e2e/capture-sync.spec.ts"
+
 ];
 
 const missing = required.filter((file) => !existsSync(resolve(root, file)));

@@ -1,0 +1,15 @@
+{
+  "mode": "unit",
+  "results": [
+    {
+      "file": "tests\\unit\\sync-queue-rules.spec.ts",
+      "ok": true,
+      "ms": 507
+    },
+    {
+      "file": "tests\\unit\\validate-inspection.spec.ts",
+      "ok": true,
+      "ms": 469
+    }
+  ]
+}
