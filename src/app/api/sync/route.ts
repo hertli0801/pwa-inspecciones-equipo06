@@ -1,71 +1,44 @@
-// Endpoint sintético de sincronización para la Semana 8.
+// Endpoint sintético de sincronización — Semana 8.
 //
-// Permite probar el envío de inspecciones por red usando datos sintéticos.
-// No utiliza una base de datos real: los registros viven en memoria.
+// Adapta handlers.ts a Next. Los registros viven en memoria (datos
+// sintéticos, sin base de datos real) y se pierden al reiniciar el servidor.
 
 import { NextRequest, NextResponse } from "next/server";
+import { createServerStore, type ServerStore } from "../../../lib/sync/server-store";
+import { handleSyncDelete, handleSyncGet, handleSyncPost } from "../../../lib/sync/handlers";
 
-type StoredRecord = {
-  clientId: string;
-  payload: unknown;
-  receivedAt: string;
-  writes: number;
-};
+// Sin esto Next genera GET de forma estática en el build y siempre
+// respondería la lista vacía.
+export const dynamic = "force-dynamic";
 
-// Almacenamiento temporal en memoria.
-const serverDb = new Map<string, StoredRecord>();
+// En desarrollo Next recarga el módulo; guardarlo en globalThis evita que
+// el almacén se reinicie con cada cambio.
+const globalStore = globalThis as typeof globalThis & { __syncStore?: ServerStore };
+const store = (globalStore.__syncStore ??= createServerStore());
 
 // Recibe una inspección y la registra usando clientId como clave.
 export async function POST(request: NextRequest) {
-  const url = new URL(request.url);
+  const forceFailure = request.nextUrl.searchParams.get("fail") === "1";
 
-  // Permite simular un fallo para las pruebas.
-  if (url.searchParams.get("fail") === "1") {
-    return NextResponse.json(
-      { ok: false, reason: "forced-failure" },
-      { status: 503 }
-    );
+  let body: unknown = null;
+  try {
+    body = await request.json();
+  } catch {
+    // JSON inválido: handleSyncPost responde 400.
   }
 
-  const body = (await request.json()) as {
-    clientId?: string;
-    payload?: unknown;
-  };
-
-  if (!body.clientId) {
-    return NextResponse.json(
-      { ok: false, reason: "missing-clientId" },
-      { status: 400 }
-    );
-  }
-
-  const existing = serverDb.get(body.clientId);
-
-  serverDb.set(body.clientId, {
-    clientId: body.clientId,
-    payload: body.payload,
-    receivedAt: new Date().toISOString(),
-    writes: (existing?.writes ?? 0) + 1,
-  });
-
-  return NextResponse.json({
-    ok: true,
-    serverId: `srv-${body.clientId}`,
-    updatedAt: new Date().toISOString(),
-  });
+  const result = handleSyncPost(store, body, { forceFailure });
+  return NextResponse.json(result.body, { status: result.status });
 }
 
 // Consulta los registros guardados en memoria.
 export async function GET() {
-  return NextResponse.json({
-    count: serverDb.size,
-    records: Array.from(serverDb.values()),
-  });
+  const result = handleSyncGet(store);
+  return NextResponse.json(result.body, { status: result.status });
 }
 
 // Limpia los registros; útil para preparar las pruebas.
 export async function DELETE() {
-  serverDb.clear();
-
-  return NextResponse.json({ ok: true });
+  const result = handleSyncDelete(store);
+  return NextResponse.json(result.body, { status: result.status });
 }
