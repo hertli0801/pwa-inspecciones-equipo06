@@ -28,6 +28,9 @@ export default async function InspeccionesPage() {
                     recibe el navegador ya incluye los datos sintéticos, sin esperar a
                     JavaScript del lado del cliente.
                 </p>
+                <p>
+                    <Link href="/inspecciones/nueva">Nueva inspección</Link>
+                </p>
             </header>
 
             <section aria-labelledby="listado-heading" className="content-section">
