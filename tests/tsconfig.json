@@ -10,4 +10,4 @@
     "resolveJsonModule": true,
     "types": ["node"]
   },
-   "include": ["*.ts", "unit/**/*.ts", "fixtures/**/*.ts"]}
+   "include": ["*.ts", "unit/**/*.ts", "integration/**/*.ts", "fixtures/**/*.ts"]}
