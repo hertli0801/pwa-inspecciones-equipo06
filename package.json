@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-    "engines": {
+  "engines": {
     "node": ">=20"
   },
   "scripts": {
@@ -11,7 +11,11 @@
     "build": "next build",
     "start": "next start",
     "test": "node tests/starter.spec.mjs && tsx tests/manifest.spec.ts && tsx tests/service-worker.spec.ts && tsx tests/offline.spec.ts && tsx tests/rendering.spec.ts && tsx tests/sync.spec.ts && tsx tests/capabilities.spec.ts",
-    "verify": "node scripts/verify.mjs"
+    "verify": "node scripts/verify.mjs",
+    "test:unit": "node scripts/run-tests.mjs unit",
+    "test:integration": "node scripts/run-tests.mjs integration",
+    "test:coverage": "c8 --include=\"src/lib/**\" --reporter=text --reporter=json-summary --report-dir=reports/coverage node scripts/run-tests.mjs all",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "next": "14.2.35",
@@ -19,10 +23,12 @@
     "react-dom": "18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/node": "^20.14.15",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "typescript": "^5.4.5",
-    "tsx": "^4.19.0"
+    "c8": "^12.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.4.5"
   }
 }
