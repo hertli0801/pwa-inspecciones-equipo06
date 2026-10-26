@@ -1,0 +1,15 @@
+{
+  "mode": "integration",
+  "results": [
+    {
+      "file": "tests\\integration\\offline-persistence.spec.ts",
+      "ok": true,
+      "ms": 503
+    },
+    {
+      "file": "tests\\integration\\sync-idempotency.spec.ts",
+      "ok": true,
+      "ms": 508
+    }
+  ]
+}
