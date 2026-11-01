@@ -1,0 +1,6 @@
+# robots.txt NO es un control de acceso: solo pide cortesía a los rastreadores
+# que lo respetan. La protección real está en la API y en los headers.
+User-agent: *
+Disallow: /api/
+Disallow: /inspecciones/
+Disallow: /offline.html
