@@ -127,3 +127,73 @@ Requiere Node 20 o superior (probado con Node 22, ver `.nvmrc`). Equivalente exa
 - Pruebas: `tests/capabilities.spec.ts` (casos soportados, no soportados, denegados y entradas invalidas).
 - Reporte de CI: enlace a la corrida de GitHub Actions del commit final.
 - Evidencia individual: `evidence/individual.md`.
+
+## Seguridad y privacidad (semana 9)
+
+Modelo de amenazas y controles de validación, credenciales, CSP, permisos y privacidad.
+Todos los datos son sintéticos.
+
+### Requisitos
+
+- Node según `.nvmrc` (22). Se recomienda 22.13 o superior: con 22.12 `npm ci` muestra un
+  aviso `EBADENGINE` de ESLint, que no impide instalar ni compilar.
+
+### Instalación y ejecución
+
+```bash
+npm ci
+npm run dev        # desarrollo en http://localhost:3000
+```
+
+### Verificación
+
+```bash
+npm test                    # 9 specs, incluidos tests/security.spec.ts y tests/security-headers.spec.mjs
+npm run typecheck
+npm run build
+make verify
+npm run test:unit
+npm run test:integration
+npm run test:e2e            # requiere: npx playwright install chromium
+```
+
+Comprobación de los artefactos de la actividad (debe terminar en `0`):
+
+```bash
+test -e docs/threat-model.md && test -e docs/privacy-data-inventory.md && test -e src/lib/security/ && test -e tests/security.spec.ts && test -e public/robots.txt; echo "exit: $?"
+```
+
+### Qué se implementó
+
+| Control | Archivo | Prueba |
+|---|---|---|
+| Validación de entradas del servidor (campos permitidos, tipos, tamaño, marcado activo) | `src/lib/security/input-guard.ts`, `src/app/api/sync/route.ts` | `tests/security.spec.ts` |
+| Variables de entorno y registros sin datos sensibles | `src/lib/security/env-guard.ts` | `tests/security.spec.ts` |
+| Detección de credenciales incrustadas | `src/lib/security/credential-scan.ts` | `tests/security.spec.ts` |
+| CSP y headers de seguridad | `src/lib/security/headers.mjs`, `next.config.mjs` | `tests/security-headers.spec.mjs` |
+| Service worker que no cachea la API | `public/sw.js` | `tests/security-headers.spec.mjs` |
+| `robots.txt` (no es un control de acceso) | `public/robots.txt` | `tests/security-headers.spec.mjs` |
+
+### Documentación
+
+- [Modelo de amenazas](docs/threat-model.md)
+- [Inventario de datos y privacidad](docs/privacy-data-inventory.md)
+
+### Evidencia
+
+- Commit evaluado y corrida de GitHub Actions: ver `evidence/individual.md` (el SHA final se fija al congelar `main`).
+- Evidencia individual: `evidence/individual.md`
+
+### Supuestos y límites
+
+- La API de sincronización es una demostración: sin autenticación, con almacén en
+  memoria y con ganchos de prueba (`DELETE /api/sync`, `?fail=1`). Ver T12, T14 y T15 en
+  el modelo de amenazas.
+- La CSP mantiene `'unsafe-inline'` en `script-src` (trade-off de Next 14).
+- La cola de sincronización vive en `localStorage` sin cifrar.
+- `npm audit --omit=dev` reporta vulnerabilidades en `next` y dependencias; la
+  actualización mayor queda como trabajo futuro. Ver §7 del modelo de amenazas.
+- El check público `public-tests/check.sh` termina con `PUBLIC_OK` aunque falten artefactos;
+  la verificación real es el comando de la sección anterior. Marca coincidencias en archivos
+  del paquete del profesor, en el lockfile y en evidencia de semanas anteriores, que no se
+  editan.
