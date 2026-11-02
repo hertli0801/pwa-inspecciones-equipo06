@@ -1,8 +1,17 @@
 // Service worker de la PWA de inspecciones de laboratorio.
 // Estrategia: network-first para navegación, cache-first para assets estáticos.
 // Ver docs/cache-strategy.md para la explicación completa de las decisiones.
+//
+// Endurecimiento de la semana 9 (fallos reales de la versión v1):
+// 1. CACHE_VERSION sube a "v2": la caché v1 pudo guardar respuestas de /api/
+//    y páginas de error; al activarse, v2 borra esa caché vieja.
+// 2. El listener "fetch" ya no intercepta peticiones de otro origen ni rutas
+//    /api/: los datos de inspecciones no deben quedar guardados en el
+//    dispositivo por el SW, y la cola de sincronización necesita la red real.
+// 3. Solo se cachean respuestas correctas del mismo origen (ok === true y
+//    type === "basic"); un 500 o una respuesta opaca no reemplazan nada.
 
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const CACHE_NAME = `inspecciones-cache-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 
@@ -51,6 +60,12 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Sin respondWith: el navegador hace la petición normal, sin caché del SW.
+  const url = new URL(request.url, self.location.origin);
+  if (url.origin !== self.location.origin || url.pathname.startsWith("/api/")) {
+    return;
+  }
+
   if (request.mode === "navigate") {
     event.respondWith(networkFirst(request));
   } else {
@@ -58,11 +73,17 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
+function isCacheable(response) {
+  return Boolean(response) && response.ok === true && response.type === "basic";
+}
+
 async function networkFirst(request) {
   try {
     const response = await fetch(request);
-    const cache = await caches.open(CACHE_NAME);
-    cache.put(request, response.clone());
+    if (isCacheable(response)) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, response.clone());
+    }
     return response;
   } catch (error) {
     const cached = await caches.match(request);
@@ -78,8 +99,10 @@ async function cacheFirst(request) {
 
   try {
     const response = await fetch(request);
-    const cache = await caches.open(CACHE_NAME);
-    cache.put(request, response.clone());
+    if (isCacheable(response)) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, response.clone());
+    }
     return response;
   } catch (error) {
     return caches.match(OFFLINE_URL);

@@ -59,6 +59,8 @@ function createFetchEvent(request: any) {
 
 const fakeResponse = (url: string) => ({
   url,
+  ok: true,
+  type: "basic",
   body: `live:${url}`,
   clone() {
     return { ...this };
@@ -80,8 +82,10 @@ const self = {
   },
   skipWaiting() {},
   clients: { claim: async () => {} },
+  // sw.js compara el origen de cada petición con el suyo (semana 9).
+  location: { origin: "http://localhost:3000" },
 };
-const context = vm.createContext({ self, caches, fetch: networkFetch, console });
+const context = vm.createContext({ self, caches, fetch: networkFetch, URL, console });
 vm.runInContext(swSource, context, { filename: "public/sw.js" });
 
 // Precachear primero (instala + activa), igual que en un arranque real.
@@ -95,7 +99,7 @@ networkOnline = true;
   listeners.fetch[0](event);
   const response = await event.response;
   assert.equal(response.body, "live:/inspeccion/1", "con red disponible debe servir la respuesta de red");
-  assert.ok(store.get("inspecciones-cache-v1")!.has("/inspeccion/1"), "la respuesta de red debe guardarse en cache");
+  assert.ok(store.get("inspecciones-cache-v2")!.has("/inspeccion/1"), "la respuesta de red debe guardarse en cache");
 }
 
 // --- B. navigate + sin red + URL nunca visitada: cae al offline.html ---

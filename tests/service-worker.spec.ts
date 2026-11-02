@@ -101,9 +101,9 @@ const notCalled = async () => {
   await installEvent.settled();
 
   const cacheNames = [...store.keys()];
-  assert.deepEqual(cacheNames, ["inspecciones-cache-v1"], "install debe crear el cache de la versión actual");
+  assert.deepEqual(cacheNames, ["inspecciones-cache-v2"], "install debe crear el cache de la versión actual");
 
-  const precached = store.get("inspecciones-cache-v1")!;
+  const precached = store.get("inspecciones-cache-v2")!;
   for (const url of ["/", "/offline.html", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"]) {
     assert.ok(precached.has(url), `install debe precachear "${url}"`);
   }
@@ -113,7 +113,7 @@ const notCalled = async () => {
 {
   const { listeners, store, calls } = await runInSandbox(notCalled);
   store.set("inspecciones-cache-v0-vieja", new Map());
-  store.set("inspecciones-cache-v1", new Map());
+  store.set("inspecciones-cache-v2", new Map());
 
   assert.ok(listeners.activate?.length, "sw.js debe registrar un listener de 'activate'");
   const activateEvent = createLifecycleEvent();
@@ -121,7 +121,7 @@ const notCalled = async () => {
   await activateEvent.settled();
 
   assert.ok(!store.has("inspecciones-cache-v0-vieja"), "activate debe borrar caches de versiones anteriores");
-  assert.ok(store.has("inspecciones-cache-v1"), "activate NO debe borrar el cache de la versión actual");
+  assert.ok(store.has("inspecciones-cache-v2"), "activate NO debe borrar el cache de la versión actual");
   assert.equal(calls.clientsClaim, 1, "activate debe llamar a self.clients.claim()");
 }
 
