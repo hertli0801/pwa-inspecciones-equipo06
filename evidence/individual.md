@@ -266,3 +266,120 @@
   - Propósito: Revisar la configuración de pruebas, organizar la estrategia de verificación en `docs/test-strategy.md`, y diagnosticar errores (por ejemplo, el `.nvmrc` corrupto y la falta de pasos de lint/typecheck en el workflow).
   - Fragmentos influenciados: Scripts de prueba (`run-tests.mjs`), configuración de Playwright, el workflow de Actions y la redacción de `docs/test-strategy.md`.
   - Validación humana: Corrí yo misma todos los comandos de arriba y revisé sus salidas reales antes de aceptarlas. Pendiente de completar antes de la entrega: `npm run build`, `npm run test:e2e` y la corrida de GitHub Actions.
+
+## Lilia Hernández Tun — Semana 9
+
+- Estudiante: Lilia Hernández Tun
+- Commit SHA evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 (`main` tras integrar mi PR: `cfa3fc9`; commit de mi contribución: `2d6ccb5`, rama `docs/semana-9-modelo-privacidad`, PR #30: https://github.com/hertli0801/pwa-inspecciones-equipo06/pull/30, aprobado por OscarH10, Merged)
+
+- Decisión técnica que puedo explicar:
+  - **Mi aporte.** `docs/threat-model.md`, `docs/privacy-data-inventory.md`, la sección "Seguridad y privacidad (semana 9)" del `README.md` y el cambio en el script `test` de `package.json`, que ahora incluye `tests/security.spec.ts` y `tests/security-headers.spec.mjs` y conserva `verify`.
+  - **Modelo de amenazas.** Parte de 6 activos (A1 a A6: inspecciones, ubicación, cola en `localStorage`, caché del service worker, API `/api/sync` y credenciales) y de 2 límites de confianza (la red y el entorno de ejecución). Identifica 16 amenazas (T1 a T16) clasificadas con STRIDE. Cada una indica el control aplicado, el archivo donde está, la prueba que lo comprueba y el riesgo residual.
+  - **Estado de las 16 amenazas.** 11 tienen control y prueba automatizada (T1 a T10 y T13). Cuatro quedaron sin control y se declaran como límite: T11 (cola y caché sin cifrar), T12 (sin autenticación en la API), T14 (`GET` y `DELETE` sin autenticar) y T15 (gancho `?fail=1`). T16 (dependencias) queda documentada sin actualización.
+  - **Trazabilidad con las pruebas.** Cada amenaza con control cita el nombre exacto de la prueba que imprime `tests/security.spec.ts` (23 pruebas) o `tests/security-headers.spec.mjs` (11 pruebas). Así, quien revise puede ir del riesgo al control y de ahí a la prueba que lo demuestra.
+  - **Fallos de la semana documentados (§5).** Al empezar no había headers de seguridad; el service worker v1 guardaba respuestas de `/api/`; la API de demostración no tiene autenticación y expone ganchos de prueba; y hay dependencias vulnerables. Los dos primeros se corrigieron con el trabajo de mis compañeros; los dos últimos se declaran sin corregir.
+  - **Trade-offs que registré (§6).** `'unsafe-inline'` en `script-src` (Next 14 inyecta scripts en línea y los nonces chocan con el pre-caché offline); no codificar HTML al guardar (corrompe los datos; se rechaza marcado activo y React escapa al mostrar); `upgrade-insecure-requests` fuera por defecto (rompe las pruebas E2E en `http://localhost`); `camera=(self)` en vez de `camera=()` (con `camera=()` el botón de foto siempre fallaría como "permiso denegado").
+  - **Dependencias (§7).** `npm audit --omit=dev` reporta 3 vulnerabilidades: `next` (crítica; instalada 14.2.35, 25 avisos), `postcss` y `source-map-js` (altas). La corrección de npm es `next@16.4.3`, un cambio mayor. No apliqué `npm audit fix --force` porque rompería el build y las pruebas y no había tiempo de validarlo. Analicé los avisos por su título: parecen no aplicar Server Actions, middleware, rewrites ni i18n (la búsqueda en `src/` y `next.config.mjs` no los encontró) ni los de nonces (el proyecto no los usa). **No se pueden descartar** los de componentes de servidor ni los del optimizador de imágenes. Por eso la decisión dice que el riesgo se acepta de forma explícita y **no afirma que las vulnerabilidades no sean explotables**.
+  - **Inventario de privacidad.** Cubre 8 datos: laboratorio, resumen, nombre del inspector, número de hallazgos, fecha, ubicación aproximada, foto adjunta y `clientId`. Para cada uno indica si es personal, dónde vive, finalidad, quién accede, retención y control. Marca como personales o potencialmente personales el nombre del inspector, el resumen (texto libre), la ubicación (sensible por naturaleza), la foto (si aparece una persona) y el `clientId` (seudónimo).
+  - **Minimización.** El servidor solo acepta 5 campos del `payload` y rechaza el resto; la ubicación se redondea antes de usarse; de la foto solo se conservan tipo y tamaño (no se guarda la imagen ni nombre de archivo ni metadatos); no se recolectan correo, teléfono, matrícula ni número de empleado; ubicación y foto son opcionales; y la CSP (`connect-src 'self'`) impide transferencias a terceros.
+  - **Honestidad en los documentos.** Antes de escribir revisé el código con `grep` y `cat` (`queue.ts`, `server-store.ts`, `handlers.ts`, `nueva/page.tsx`, `geolocation.ts`). Lo que no pude comprobar quedó como "no verificado" o "se declara como límite", en vez de inventar una respuesta.
+  - **Integración en `npm test`.** Añadí las dos pruebas de seguridad al script `test` y conservé `verify`, para que corran junto con las demás y no queden como un paso aparte que alguien olvide.
+
+- Prueba que ejecuté y resultado:
+  ```text
+  npm test                          -> 9 specs en PASS (starter, manifest, service-worker, offline, rendering, sync, capabilities, security, security-headers)
+  Pruebas de seguridad              -> 23/23 PASS
+  Pruebas de headers y SW           -> 11/11 PASS
+  npm run typecheck                 -> sin errores
+  npm run verify                    -> Starter verificable: PASS
+  AC-02 (test -e de 5 artefactos)   -> exit 0
+  grep -n "\*\*\[" docs/*.md README.md -> SIN MARCAS
+  git status antes del commit       -> README.md, package.json y los dos docs; sin reports/
+  npm audit --omit=dev              -> 3 vulnerabilidades (2 altas, 1 crítica) en next, postcss y source-map-js
+  PR #30 en GitHub                  -> 16 verificaciones aprobadas
+  ```
+  Evidencia: captura de GitHub con la aprobación, la integración y las 16 verificaciones aprobadas.
+
+- Limitación o fallo diagnosticado:
+  - **`package.json`:** mi primera edición quitó por accidente la línea `"verify"` (lo vi en `git diff package.json`) y dejó `&&tsx` sin espacio. Al corregirlo con `sed`, la cadena quedó `tsx&& tsx tsx tests/rendering.spec.ts` y `npm test` falló con `ERR_MODULE_NOT_FOUND` (módulo `tsx`). Lo resolví reescribiendo el script completo con `npm pkg set` y repetí `npm test`: 9 specs en PASS. El `diff` final cambia una sola línea y conserva `verify`.
+  - **`make`:** `make verify` no se pudo ejecutar en mi equipo porque Git Bash de Windows no tiene el programa `make` (`which make` no lo encuentra). El `Makefile` del repositorio está bien formado (comandos con tabulador) y su objetivo `verify` solo ejecuta `npm run verify`, así que usé ese comando, que es el equivalente exacto, y dio `Starter verificable: PASS`. El README y la sección 8 del modelo de amenazas siguen mencionando `make verify`, que sí funciona donde `make` está instalado.
+  - **Sin verificar, declarado como límite en los documentos:** si la ubicación se guarda en la cola local; cuándo se elimina un elemento ya sincronizado; el instrumento legal específico de protección de datos; y la respuesta de `/_next/image` con `curl` sobre `npm run start`.
+  - **Sin cubrir en esta entrega:** aviso de privacidad y procedimiento de derechos de acceso, rectificación, cancelación y oposición; periodos de retención formales; cifrado de la cola y la caché locales; autenticación y límite de tasa en la API.
+  - **Qué demuestra mi contribución:** que cada riesgo identificado tiene su control o su límite declarado, y que los controles con prueba pasan en CI. **Qué no demuestra:** que el modelo cubra todos los riesgos reales, ni que las vulnerabilidades de `next` no sean explotables.
+  - Git avisó que los archivos cambiarán de LF a CRLF al tocarlos; es solo una advertencia de saltos de línea en Windows.
+
+- Cambio que podría defender o modificar en vivo: Quitar de `package.json` las dos pruebas de seguridad que añadí al script `test` (`tsx tests/security.spec.ts` y `node tests/security-headers.spec.mjs`) y mostrar que `npm test` pasa de 9 a 7 specs: las 34 pruebas de seguridad dejan de ejecutarse y nada falla. Con eso explico por qué las integré al comando principal.
+
+- Uso declarado de IA (herramienta, propósito, validación): Herramienta: Claude. Propósito: redactar el borrador del modelo de amenazas, del inventario de privacidad y del README, y guiarme con Git y con los comandos `sed` para resolver las marcas pendientes. Validación: ejecuté yo misma `npm test`, `npm run typecheck`, `npm run verify`, la comprobación AC-02 y `npm audit`; revisé el código real con `grep` y `cat` para que cada afirmación de los documentos coincidiera con él, y lo que no pude verificar lo dejé como "no verificado"; comprobé con `grep` que no quedaran marcas, con `git diff package.json` que el cambio fuera una línea, con `cat -A Makefile` que el archivo estuviera bien formado, y con `git status` que solo se subieran los cuatro archivos y la rama no fuera `main`.
+
+## Óscar Yael Hernández Rodríguez — Semana 9
+
+- Estudiante: Óscar Yael Hernández Rodríguez
+- Commit SHA evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: `818b9a859ba9fc04fedb20045486216037268985`, rama `feat/semana-9-seguridad`; PR pendiente de integrar a `main`)
+- Decisión técnica que puedo explicar: La validación se hace en el servidor aunque el cliente ya valide, porque cualquiera puede llamar `/api/sync` con `curl` sin pasar por la interfaz. El guard **falla cerrado**: ante cualquier duda rechaza con un mensaje genérico (`invalid-payload`, `invalid-body`), sin repetir lo que mandó el cliente. `readJsonBody` corta la lectura al superar 16 KiB sin confiar en `Content-Length`, porque ese encabezado lo controla el cliente. Se rechaza el marcado activo (`<script`, `<iframe`, `javascript:`) en lugar de codificarlo, porque el escape debe hacerse al mostrar y React ya lo hace; guardar HTML "limpio" daría una falsa sensación de seguridad. Un `<` suelto sí se acepta ("Voltaje < 5V" es válido). `requireEnv` nombra la variable pero nunca su valor, y los nombres sensibles se arman por partes (`"pass" + "word"`) para no disparar el escáner de credenciales. Mi aporte: los cuatro módulos de `src/lib/security/` (`input-guard.ts`, `env-guard.ts`, `credential-scan.ts`, `index.ts`), `tests/security.spec.ts` (23 pruebas con datos sintéticos y la fecha `new Date(2026, 9, 29)` inyectada) y el cambio en `src/app/api/sync/route.ts` para que el POST use `readJsonBody` y `parseInspectionPayload` antes de `handleSyncPost`.
+- Prueba que ejecuté y resultado:
+  ```text
+  npx tsx tests/security.spec.ts   -> 23/23 pruebas de seguridad en PASS
+  npm run typecheck                -> sin errores
+  npm run lint                     -> sin errores (1 warning: <img> en app-shell.tsx)
+  npm run build                    -> Compiled successfully, 6/6 páginas generadas
+  npm test                         -> 7/7 specs PASS (starter, manifest, service-worker, offline, rendering, sync, capabilities)
+  npm run test:unit                -> 2/2 specs PASS (17 + 27 pruebas)
+  npm run test:integration         -> 2/2 specs PASS (3 + 3 pruebas)
+  ```
+  Pruebas manuales con `npm run dev` y `curl`:
+  ```text
+  POST Content-Type: text/plain  -> 415
+  POST JSON roto                 -> 400
+  POST cuerpo > 16 KiB           -> 413
+  GET /api/sync                  -> 200 {"count":0,"items":[]}
+  POST válido                    -> 201 {"ok":true,"serverId":"srv-smoke-semana9",...}
+  GET tras el POST               -> 200 count 1
+  DELETE /api/sync               -> 200 {"ok":true}
+  ```
+  Demuestra que el servidor rechaza campos extra, `__proto__`, cuerpos que no son objeto, tipos incorrectos, marcado activo, resumen de 501 caracteres, campos gigantes y fechas futuras; que acepta un `<` suelto, limpia caracteres de control y no refleja el ataque en los errores. No demuestra autenticación ni límite de tasa, persistencia real (el almacén vive en memoria) ni el comportamiento en un navegador real.
+- Limitación o fallo diagnosticado: La API no tiene autenticación ni límite de tasa, así que la validación protege la forma y el tamaño del cuerpo, pero no impide el abuso del endpoint. Los errores son deliberadamente genéricos, lo que dificulta saber qué campo falló al depurar. El guard valida solo los 5 campos de la inspección; `clientId` y `version` siguen siendo responsabilidad de `handleSyncPost`. `npm run lint` falló al principio porque faltaba ejecutar `npm install` tras el pull (ESLint no estaba en `node_modules`); se resolvió instalando las dependencias. La suite aún no está dentro de `npm test`; se ejecuta aparte con `npx tsx`.
+- Cambio que podría defender o modificar en vivo: **[completar: por ejemplo, subir el límite de 16 KiB en `readJsonBody` y mostrar que el POST de más de 16 KiB deja de devolver 413, o quitar `containsActiveMarkup` y mostrar qué prueba falla.]**
+- Uso declarado de IA (herramienta, propósito, validación): Herramienta: Claude. Propósito: entender el reparto de la semana 9, generar los cuatro módulos de seguridad y las 23 pruebas, adaptar `route.ts` al guard y explicar cada decisión (falla cerrada, límites, redacción de logs, detección de credenciales). Validación: ejecuté yo mismo todas las pruebas y comandos de arriba; levanté `npm run dev` y comprobé con `curl` los códigos 415, 400, 413, 200 y 201; revisé con `git status` que solo se subieran los 6 archivos de mi tarea y con `git diff` que `route.ts` solo tuviera los cambios del guard.
+
+---
+
+## José Alberto Herrera Flores — Semana 9
+
+- Estudiante: José Alberto Herrera Flores
+- Commit SHA evaluado: https://github.com/hertli0801/pwa-inspecciones-equipo06 (Commit: `5d13ec6e75cbf50f2737bb878113f35c4a2d0e98`, rama `feat/semana-9-headers`, PR #29: https://github.com/hertli0801/pwa-inspecciones-equipo06/pull/29, pendiente de revisión de Óscar)
+- Decisión técnica que puedo explicar: `headers.mjs` es JavaScript plano porque `next.config.mjs` lo ejecuta Node sin compilar; la prueba importa el mismo archivo, así que se prueba exactamente lo que Next envía. `script-src` lleva `'unsafe-inline'` porque Next 14 inyecta scripts en línea para hidratar; la alternativa son los nonces, pero exigen middleware y render dinámico, y el HTML que el SW sirve sin conexión llevaría un nonce viejo que ya no coincide. `'unsafe-eval'` y `ws:` solo en desarrollo, y `upgrade-insecure-requests` no va por defecto porque rompería `http://localhost`. El SW dejó de interceptar `/api/` porque la v1 guardaba respuestas de la API (datos de inspecciones) y páginas de error en Cache Storage: un problema de privacidad que además podía ocultar fallas de sincronización; subí la caché a `v2` para que `activate` borre la caché contaminada. Dejé `camera=(self)` porque la pantalla de captura usa la cámara. `robots.txt` no es seguridad: solo lo respetan los rastreadores corteses. Mi aporte: `src/lib/security/headers.mjs`, `next.config.mjs`, `public/sw.js` (`CACHE_VERSION = "v2"`, `isCacheable()` solo guarda `ok === true` y `type === "basic"`), `public/robots.txt`, `tests/security-headers.spec.mjs` (11 pruebas, SW aislado en `node:vm`) y los ajustes a `tests/service-worker.spec.ts` y `tests/offline.spec.ts` sin quitar aserciones.
+- Prueba que ejecuté y resultado:
+  ```text
+  node tests/security-headers.spec.mjs -> 11/11 pruebas de headers y service worker en PASS
+  npm test                       -> 7/7 specs PASS (starter, manifest, service-worker, offline, rendering, sync, capabilities)
+  npx tsx tests/security.spec.ts -> 23/23 pruebas de seguridad en PASS
+  npm run typecheck              -> sin errores
+  npm run lint                   -> sin errores (1 warning previo: <img> en app-shell.tsx)
+  npm run build                  -> 6/6 páginas generadas
+  make verify                    -> Starter verificable: PASS
+  CI=1 npx playwright test       -> 4 passed (build de producción)
+  GitHub Actions en PR #29       -> evaluate, verify y Tests and verification en pass
+  ```
+  Con `npm run start` y `curl`:
+  ```text
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), microphone=(), payment=(), usb=(), geolocation=(self)
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+  /sw.js -> Cache-Control: no-cache
+  (sin X-Powered-By)
+  ```
+  En Chromium con el SW activo:
+  ```text
+  cspViolations: [], controller: true, caches: ["inspecciones-cache-v2"], apiCached: [],
+  /api/sync fromServiceWorker: false,
+  sin red: recarga "Inspecciones de laboratorio" y ruta no visitada -> "Sin conexión — Inspecciones de laboratorio"
+  ```
+  Demuestra que la CSP de producción no permite `eval`, websockets ni comodines; que Next envía los headers en todas las rutas (incluida `/api/sync`) sin anunciar su versión; que el SW ignora `/api/`, otros orígenes y métodos distintos de GET, no cachea 5xx ni respuestas opacas y borra la caché v1; y que el modo offline sigue funcionando. No demuestra que HSTS funcione (solo aplica con HTTPS y probé en localhost), protección completa contra XSS (`'unsafe-inline'` sigue presente) ni el comportamiento en Safari o Firefox (solo probé Chromium).
+- Limitación o fallo diagnosticado: Al cambiar `sw.js`, `tests/service-worker.spec.ts` falló (`expected: ['inspecciones-cache-v1'], actual: ['inspecciones-cache-v2']`) porque la versión estaba fija en la prueba; además `offline.spec.ts` no daba `self.location` ni URL al sandbox. Lo adapté sin quitar aserciones. En la prueba en navegador aparecieron errores `Refused to execute script ... MIME type ('text/html')`: un `next start` viejo seguía corriendo mientras el E2E recompiló `.next` y servía hashes de chunks que ya no existían; `nosniff` bloqueó correctamente esos 404 en HTML. Al reiniciar el servidor: 0 violaciones. La CSP mantiene `'unsafe-inline'` (riesgo aceptado).
+- Cambio que podría defender o modificar en vivo: En una rama temporal, quitar el `if` de `/api/` en `sw.js`: falla la prueba "el SW no intercepta /api/, otros orígenes ni métodos distintos de GET". O cambiar `camera=(self)` a `camera=()` y mostrar qué prueba falla y por qué rompe la captura.
+- Uso declarado de IA (herramienta, propósito, validación): Herramienta: Claude (Claude Code). Propósito: entender mi parte de la semana 9, generar `headers.mjs`, `next.config.mjs`, los cambios de `sw.js`, `robots.txt` y las 11 pruebas, diagnosticar las fallas de los specs existentes y explicar los trade-offs de la CSP. Validación: ejecuté `node tests/security-headers.spec.mjs` (11/11), `npm test`, `typecheck`, `lint`, `build` y `make verify`; levanté `npm run start` y revisé los headers con `curl`; comprobé en DevTools (Application → Cache Storage) que solo existe `inspecciones-cache-v2`, que `/api/sync` no dice "(ServiceWorker)" y que en modo Offline abre la página u `offline.html`; revisé con `git diff` que no se perdiera nada de `sw.js` ni de `next.config.mjs`, y confirmé el CI en verde.
